@@ -1,0 +1,53 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Media uploads (optional - remove if you want to track uploads)
+media/
+
+# Static files (if collected)
+staticfiles/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.local
+.env.*
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Migrations (optional - ONLY if you want clean rebuild workflow)
+# If your team wants to track migrations, REMOVE this section
+# =========================
+# */migrations/*.pyc
+# */migrations/__pycache__/
