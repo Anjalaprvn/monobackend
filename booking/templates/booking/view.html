@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}View {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">View {{ model_name }}</h2>
+    <a href="{% url 'booking:booking_list' %}" class="btn-close" aria-label="Close"></a>
+  </div>
+
+  <div class="booking-details">
+    <div class="detail-section">
+      <h3>Customer Information</h3>
+      <div class="detail-row">
+        <label class="detail-label">Name</label>
+        <div class="detail-value">{{ booking.name }}</div>
+      </div>
+      <div class="detail-row">
+        <label class="detail-label">Email</label>
+        <div class="detail-value">{{ booking.email }}</div>
+      </div>
+      <div class="detail-row">
+        <label class="detail-label">Phone</label>
+        <div class="detail-value">{{ booking.phone }}</div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <h3>Slot Information</h3>
+      <div class="detail-row">
+        <label class="detail-label">Slot Name</label>
+        <div class="detail-value">{{ booking.slot.name }}</div>
+      </div>
+      <div class="detail-row">
+        <label class="detail-label">Date</label>
+        <div class="detail-value">{{ booking.slot.date|date:"M d, Y" }}</div>
+      </div>
+      <div class="detail-row">
+        <label class="detail-label">Time</label>
+        <div class="detail-value">{{ booking.slot.start_time|time:"g:i A" }} - {{ booking.slot.end_time|time:"g:i A" }}</div>
+      </div>
+    </div>
+
+    {% if booking.notes %}
+    <div class="detail-section">
+      <h3>Notes</h3>
+      <div class="detail-row">
+        <div class="detail-value">{{ booking.notes }}</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="detail-section">
+      <h3>Booking Details</h3>
+      <div class="detail-row">
+        <label class="detail-label">Created At</label>
+        <div class="detail-value">{{ booking.created_at|date:"M d, Y g:i A" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="form-actions">
+    <a href="{% url 'booking:booking_list' %}" class="btn btn-secondary">Back to List</a>
+    <a href="{% url 'booking:booking_edit' booking.pk %}" class="btn-primary">
+      <i class="bi bi-pencil"></i> Edit Booking
+    </a>
+  </div>
+</div>
+
+<style>
+.booking-details {
+  padding: 1.5rem;
+}
+
+.detail-section {
+  margin-bottom: 2rem;
+}
+
+.detail-section h3 {
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+  color: #495057;
+  font-size: 1.2rem;
+}
+
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.detail-label {
+  flex: 0 0 200px;
+  font-weight: 600;
+  color: #495057;
+  min-width: 150px;
+}
+
+.detail-value {
+  flex: 1;
+  padding-left: 1rem;
+  color: #212529;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .detail-label {
+    flex: 0 0 100%;
+    margin-bottom: 0.25rem;
+  }
+  
+  .detail-value {
+    padding-left: 0;
+  }
+}
+</style>
+
+{% endblock %}

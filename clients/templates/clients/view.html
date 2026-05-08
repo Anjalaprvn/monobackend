@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ client.name|default:"Client" }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="blog-view-nav">
+  <a href="{% url 'clients:client_list' %}" class="btn-back">
+    <span>Back</span>
+  </a>
+</div>
+
+<!-- Client Detail Container -->
+<div class="blog-detail">
+  <!-- Client Header -->
+  <div class="blog-detail-header">
+    <h2 class="blog-detail-title">{{ client.name }}</h2>
+    <div class="blog-detail-author">
+      <i class="bi bi-envelope"></i>
+      <span>{{ client.email }}</span>
+    </div>
+  </div>
+
+  <!-- Client Content -->
+  <div class="blog-detail-content">
+    <div class="blog-detail-meta">
+      <span class="blog-meta-label">Client Details</span>
+      <div class="blog-meta-datetime">
+        <span class="blog-meta-time">
+          <i class="bi bi-building"></i>
+          {{ client.company|default:"-" }}
+        </span>
+        <span class="blog-meta-date">
+          <i class="bi bi-calendar3"></i>
+          {{ client.created_at|date:"M d, Y" }}
+        </span>
+      </div>
+    </div>
+    
+    <div class="client-details-grid">
+      <div class="client-phone">
+        <h4>Phone</h4>
+        <p>{{ client.phone|default:"-" }}</p>
+      </div>
+      
+      <div class="client-website">
+        <h4>Website</h4>
+        <p>{{ client.website|default:"-" }}</p>
+      </div>
+      
+      <div class="client-status">
+        <h4>Status</h4>
+        <p>
+          <span class="status-badge-blog status-{% if client.is_active %}active{% else %}inactive{% endif %}">
+            {% if client.is_active %}Active{% else %}Inactive{% endif %}
+          </span>
+        </p>
+      </div>
+    </div>
+    
+    <div class="client-address">
+      <h4>Address</h4>
+      <p>{{ client.address|default:"-" }}, {{ client.city|default:"" }} {{ client.state|default:"" }}, {{ client.country|default:"" }} {{ client.zip_code|default:"" }}</p>
+    </div>
+    
+    <div class="client-notes">
+      <h4>Notes</h4>
+      <p>{{ client.notes|default:"No notes available"|linebreaks }}</p>
+    </div>
+  </div>
+
+  <!-- Client Actions -->
+  <div class="blog-detail-actions">
+    <a href="#" class="btn btn-warning">Edit Client</a>
+    <a href="#" class="btn btn-danger">Delete Client</a>
+  </div>
+</div>
+{% endblock %}

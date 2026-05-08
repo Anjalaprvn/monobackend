@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">Edit {{ model_name }}</h2>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+
+  <form id="serviceForm" class="blog-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- Row 1: Name, Slug, Active -->
+    <div class="form-row form-row-3">
+      <div class="form-group">
+        <label class="form-label">Name <span class="required">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ service.name }}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Slug</label>
+        <input type="text" class="form-control" id="slug" name="slug" value="{{ service.slug }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Active</label>
+        <select class="form-control form-select" id="is_active" name="is_active">
+          <option value="true" {% if service.is_active %}selected{% endif %}>Yes</option>
+          <option value="false" {% if not service.is_active %}selected{% endif %}>No</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 2: Description -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Description <span class="required">*</span></label>
+        <textarea class="form-control form-textarea" id="description" name="description" rows="5" required>{{ service.description }}</textarea>
+      </div>
+    </div>
+
+    <!-- Row 3: Icon Upload -->
+    <!-- <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Icon</label>
+        {% if service.icon %}
+        <div class="current-image mb-2">
+          <p>Current icon:</p>
+          <img src="{{ service.icon.url }}" alt="{{ service.name }}" width="100" class="img-thumbnail">
+        </div>
+        {% endif %} -->
+        <div class="media-upload-container">
+          <div class="media-preview-single" id="mediaPreview">
+            {% if service.icon %}
+            <div class="media-preview-item">
+              <img src="{{ service.icon.url }}" alt="{{ service.name }}">
+              <button type="button" class="media-remove-btn" onclick="removeMedia()">
+                <i class="bi bi-trash3"></i>
+              </button>
+              <span class="media-filename">{{ service.icon.name|default:"Current icon" }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <label class="media-upload-box" id="uploadBox" for="icon">
+            <div class="upload-icon">
+              <i class="bi bi-cloud-arrow-up"></i>
+            </div>
+            <div class="upload-text">
+              <span class="upload-title">Drop/Click to upload</span>
+              <span class="upload-hint">IMAGE* up to 10MB</span>
+            </div>
+            <input type="file" id="icon" name="icon" accept="image/*" hidden>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <a href="{% url 'services:service_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">Update {{ model_name }}</button>
+    </div>
+  </form>
+  
+  <script>
+    // Media upload handling
+    const mediaInput = document.getElementById('icon');
+    const mediaPreview = document.getElementById('mediaPreview');
+    const uploadBox = document.getElementById('uploadBox');
+    let uploadedFile = null;
+
+    mediaInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        setPreview(file);
+      }
+    });
+
+    function setPreview(file) {
+      uploadedFile = file;
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        mediaPreview.innerHTML = `
+          <div class="media-preview-item">
+            <img src="${e.target.result}" alt="${file.name}">
+            <button type="button" class="media-remove-btn" onclick="removeMedia()">
+              <i class="bi bi-trash3"></i>
+            </button>
+            <span class="media-filename">${file.name}</span>
+          </div>
+        `;
+        uploadBox.style.display = 'none';
+      };
+      
+      reader.readAsDataURL(file);
+    }
+
+    function removeMedia() {
+      mediaPreview.innerHTML = '';
+      uploadedFile = null;
+      mediaInput.value = '';
+      // Show the upload box again
+      uploadBox.style.display = 'flex';
+      
+      // Add a hidden input to indicate the icon should be cleared
+      const clearIconInput = document.createElement('input');
+      clearIconInput.type = 'hidden';
+      clearIconInput.name = 'clear_icon';
+      clearIconInput.value = 'true';
+      document.getElementById('serviceForm').appendChild(clearIconInput);
+    }
+
+    // Drag and drop support
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadBox.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadBox.addEventListener(eventName, () => uploadBox.classList.add('drag-over'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadBox.addEventListener(eventName, () => uploadBox.classList.remove('drag-over'), false);
+    });
+
+    uploadBox.addEventListener('drop', function(e) {
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        setPreview(file);
+      }
+    });
+
+    document.getElementById('serviceForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      try {
+        const response = await fetch('{% url "services:update_service_api" service.id %}', {
+          method: 'PUT',
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          // Show success message
+          alert('Service updated successfully!');
+          // Redirect to services list page
+          window.location.href = '{% url "services:service_list" %}';
+        } else {
+          // Show error message
+          let errorMessage = 'Failed to update service.';
+          if (result.details) {
+            errorMessage += ' Details: ' + JSON.stringify(result.details);
+          } else if (result.error) {
+            errorMessage += ' Error: ' + result.error;
+          }
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while updating the service.');
+      }
+    });
+  </script>
+</div>
+{% endblock %}

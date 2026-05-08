@@ -1,0 +1,219 @@
+{% load static %}
+
+<!-- Dashboard Content -->
+<div class="dashboard-content">
+  <!-- Stats Cards Row -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-4">
+      <div class="stat-card card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Total Plots</h6>
+              <h2 class="mb-0">24</h2>
+              <small class="text-success">
+                <i class="bi bi-arrow-up"></i> +12%
+              </small>
+            </div>
+            <div class="stat-icon bg-primary text-white rounded-circle p-3">
+              <i class="bi bi-map"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+      <div class="stat-card card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Active Leads</h6>
+              <h2 class="mb-0">156</h2>
+              <small class="text-success">
+                <i class="bi bi-arrow-up"></i> +18%
+              </small>
+            </div>
+            <div class="stat-icon bg-success text-white rounded-circle p-3">
+              <i class="bi bi-people"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+      <div class="stat-card card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">This Month Revenue</h6>
+              <h2 class="mb-0">₹2.4Cr</h2>
+              <small class="text-danger">
+                <i class="bi bi-arrow-down"></i> -2%
+              </small>
+            </div>
+            <div class="stat-icon bg-info text-white rounded-circle p-3">
+              <i class="bi bi-currency-rupee"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+      <div class="stat-card card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Avg. Vastu Score</h6>
+              <h2 class="mb-0">86%</h2>
+              <small class="text-success">
+                <i class="bi bi-star"></i> Excellent
+              </small>
+            </div>
+            <div class="stat-icon bg-warning text-white rounded-circle p-3">
+              <i class="bi bi-stars"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity and Quick Actions -->
+  <div class="row">
+    <!-- Recent Activity -->
+    <div class="col-md-8 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Recent Activity</h5>
+        </div>
+        <div class="card-body">
+          <div class="activity-list">
+            <div class="activity-item d-flex py-3 border-bottom">
+              <div class="activity-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                <i class="bi bi-person-plus"></i>
+              </div>
+              <div class="flex-grow-1">
+                <p class="mb-1"><strong>New lead from Plot Finder Tool</strong></p>
+                <p class="text-muted mb-1">Rajesh Kumar</p>
+                <small class="text-muted">2 mins ago</small>
+              </div>
+            </div>
+            
+            <div class="activity-item d-flex py-3 border-bottom">
+              <div class="activity-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                <i class="bi bi-bookmark-check"></i>
+              </div>
+              <div class="flex-grow-1">
+                <p class="mb-1"><strong>Plot Sunrise Meadows - A1 marked as Reserved</strong></p>
+                <small class="text-muted">1 hour ago</small>
+              </div>
+            </div>
+            
+            <div class="activity-item d-flex py-3 border-bottom">
+              <div class="activity-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                <i class="bi bi-calendar-check"></i>
+              </div>
+              <div class="flex-grow-1">
+                <p class="mb-1"><strong>Site visit scheduled with Priya Sharma</strong></p>
+                <small class="text-muted">3 hours ago</small>
+              </div>
+            </div>
+            
+            <div class="activity-item d-flex py-3">
+              <div class="activity-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+              <div class="flex-grow-1">
+                <p class="mb-1"><strong>Lead status updated to Site Visit</strong></p>
+                <p class="text-muted mb-1">Amit Patel</p>
+                <small class="text-muted">5 hours ago</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-3">
+            <button class="btn btn-primary btn-lg">
+              <i class="bi bi-plus-circle me-2"></i>Add New Plot
+            </button>
+            <button class="btn btn-outline-primary btn-lg">
+              <i class="bi bi-eye me-2"></i>View New Leads
+            </button>
+            <button class="btn btn-outline-success btn-lg">
+              <i class="bi bi-gear me-2"></i>Configure Nakshatras
+            </button>
+            <button class="btn btn-outline-info btn-lg">
+              <i class="bi bi-calendar-plus me-2"></i>Schedule Site Visit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Dashboard Content Styles */
+.dashboard-content {
+  padding: 2rem;
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px !important;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.stat-icon {
+  font-size: 1.5rem;
+}
+
+.activity-item:hover {
+  background-color: rgba(0,123,255,0.03);
+  border-radius: 8px;
+  margin: 0 -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 1rem;
+  }
+  
+  .stat-card:hover {
+    transform: none;
+  }
+}
+</style>

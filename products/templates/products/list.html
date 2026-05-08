@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ model_name }} List - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Filter Bar -->
+<div class="blog-filter-bar">
+  <div class="search-box blog-search">
+    <i class="bi bi-search search-icon"></i>
+    <input type="search" class="search-input" placeholder="Search products...">
+  </div>
+  <div class="blog-filter-actions">
+    <select class="filter-select">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    <a href="{% url 'products:product_add' %}" class="btn-primary text-decoration-none">
+      <i class="bi bi-plus"></i>
+      <span class="btn-text">Add New</span>
+    </a>
+  </div>
+</div>
+
+<!-- Product Table Card -->
+<div class="dashboard-card p-0">
+  <div class="table-responsive">
+    <table class="table table-blog">
+      <thead>
+        <tr>
+          <th class="col-title">Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>SKU</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td class="col-title">
+            <div class="blog-title-cell">
+              <span class="blog-title">{{ product.name }}</span>
+              <span class="blog-excerpt">{{ product.description|truncatechars:50 }}</span>
+            </div>
+          </td>
+          <td>
+            <div class="author-cell">
+              <span>{{ product.description|truncatechars:30 }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="price-paid">
+              ${{ product.price }}
+            </span>
+          </td>
+          <td>
+            <span class="{% if product.stock_quantity <= 5 %}stock-low{% elif product.stock_quantity <= 20 %}stock-medium{% else %}stock-high{% endif %}">
+              {{ product.stock_quantity }} in stock
+            </span>
+          </td>
+          <td>
+            <span class="category-badge category-{{ product.category|lower|slugify }}">{{ product.category|default:"-" }}</span>
+          </td>
+          <td>
+            <span class="status-badge-blog status-{% if product.is_active %}active{% else %}inactive{% endif %}">{% if product.is_active %}Active{% else %}Inactive{% endif %}</span>
+          </td>
+          <td>
+            <span class="views-cell">
+              {{ product.sku|default:"-" }}
+            </span>
+          </td>
+          <td>
+            <span class="date-cell">
+              <i class="bi bi-calendar3"></i>
+              {{ product.created_at|date:"M d, Y" }}
+            </span>
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="{% url 'products:product_detail' %}?id={{ product.pk }}" class="action-btn-table external">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'products:product_edit' product.pk %}" class="action-btn-table edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post" action="{% url 'products:delete_product' product.pk %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete product &quot;{{ product.name|escapejs }}&quot;?');">
+                {% csrf_token %}
+                <button type="submit" class="action-btn-table delete" style="background: none; border: none; padding: 0;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" class="text-center py-4 text-muted">No {{ model_name }} found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

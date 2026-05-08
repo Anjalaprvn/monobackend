@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Testimonial List - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Filter Bar -->
+<div class="blog-filter-bar">
+  <div class="search-box blog-search">
+    <i class="bi bi-search search-icon"></i>
+    <input type="search" class="search-input" placeholder="Search testimonials...">
+  </div>
+  <div class="blog-filter-actions">
+    <select class="filter-select">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    <a href="{% url 'dashboard:add_testimonial' %}" class="btn-primary text-decoration-none">
+      <i class="bi bi-plus"></i>
+      <span class="btn-text">Add New</span>
+    </a>
+  </div>
+</div>
+
+<!-- Testimonial Table Card -->
+<div class="dashboard-card p-0">
+  <div class="table-responsive">
+    <table class="table table-blog">
+      <thead>
+        <tr>
+          <th class="col-title">Name</th>
+          <th>Designation</th>
+          <th>Company</th>
+          <th>Rating</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for testimonial in testimonials %}
+        <tr>
+          <td class="col-title">
+            <div class="blog-title-cell">
+              <div class="d-flex align-items-center">
+                {% if testimonial.image %}
+                  <div class="testimonial-image me-2">
+                    <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" width="40" height="40" class="rounded-circle">
+                  </div>
+                {% endif %}
+                <span class="blog-title">{{ testimonial.name }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="author-cell">
+              <span>{{ testimonial.designation|default:"-" }}</span>
+            </div>
+          </td>
+          <td>
+            <span>{{ testimonial.company|default:"-" }}</span>
+          </td>
+          <td>
+            <div class="rating-cell">
+              {% for i in '12345'|make_list %}
+                {% if forloop.counter <= testimonial.rating %}
+                  <i class="bi bi-star-fill text-warning"></i>
+                {% else %}
+                  <i class="bi bi-star text-muted"></i>
+                {% endif %}
+              {% endfor %}
+              <span class="ms-1">{{ testimonial.rating }}/5</span>
+            </div>
+          </td>
+          <td>
+            <span class="views-cell">
+              {{ testimonial.message|truncatechars:50 }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge-blog status-{% if testimonial.is_active %}active{% else %}inactive{% endif %}">{% if testimonial.is_active %}Active{% else %}Inactive{% endif %}</span>
+          </td>
+          <td>
+            <span class="date-cell">
+              <i class="bi bi-calendar3"></i>
+              {{ testimonial.created_at|date:"M d, Y" }}
+            </span>
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="{% url 'dashboard:view_testimonial' testimonial.pk %}" class="action-btn-table external">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'dashboard:edit_testimonial' testimonial.pk %}" class="action-btn-table edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post" action="{% url 'dashboard:delete_testimonial' testimonial.pk %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete testimonial &quot;{{ testimonial.name|escapejs }}&quot;?');">
+                {% csrf_token %}
+                <button type="submit" class="action-btn-table delete" style="background: none; border: none; padding: 0;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center py-4 text-muted">No testimonials found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+{% endblock %}

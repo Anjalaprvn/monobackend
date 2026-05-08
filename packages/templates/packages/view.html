@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ package.name|default:"Package" }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="blog-view-nav">
+  <a href="{% url 'packages:package_list' %}" class="btn-back">
+    <span>Back</span>
+  </a>
+</div>
+
+<!-- Package Detail Container -->
+<div class="blog-detail">
+  <!-- Package Header -->
+  <div class="blog-detail-header">
+    <h2 class="blog-detail-title">{{ package.name }}</h2>
+    <div class="blog-detail-author">
+      <i class="bi bi-tag"></i>
+      <span>{{ package.duration|default:"-" }}</span>
+    </div>
+  </div>
+
+  <!-- Package Content -->
+  <div class="blog-detail-content">
+    <div class="blog-detail-meta">
+      <span class="blog-meta-label">Package Details</span>
+      <div class="blog-meta-datetime">
+        <span class="blog-meta-time">
+          <i class="bi bi-cash"></i>
+          ${{ package.price }}
+        </span>
+        <span class="blog-meta-date">
+          <i class="bi bi-calendar3"></i>
+          {{ package.created_at|date:"M d, Y" }}
+        </span>
+      </div>
+    </div>
+    
+    <div class="package-details-grid">
+      <div class="package-status">
+        <h4>Status</h4>
+        <p>
+          <span class="status-badge-blog status-{% if package.is_active %}active{% else %}inactive{% endif %}">
+            {% if package.is_active %}Active{% else %}Inactive{% endif %}
+          </span>
+        </p>
+      </div>
+    </div>
+    
+    <div class="package-description">
+      <h4>Description</h4>
+      <p>{{ package.description|default:"No description available"|linebreaks }}</p>
+    </div>
+    
+    <div class="package-features">
+      <h4>Features</h4>
+      {% if package.features %}
+        <p>{{ package.features|linebreaks }}</p>
+      {% else %}
+        <p>No features listed</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Package Actions -->
+  <div class="blog-detail-actions">
+    <a href="#" class="btn btn-warning">Edit Package</a>
+    <a href="#" class="btn btn-danger">Delete Package</a>
+  </div>
+</div>
+{% endblock %}

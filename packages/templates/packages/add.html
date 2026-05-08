@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">Add New {{ model_name }}</h2>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+
+  <form id="packageForm" class="blog-form">
+    {% csrf_token %}
+    <!-- Row 1: Name, Price, Duration -->
+    <div class="form-row form-row-3">
+      <div class="form-group">
+        <label class="form-label">Name <span class="required">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price <span class="required">*</span></label>
+        <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration</label>
+        <input type="text" class="form-control" id="duration" name="duration" placeholder="e.g., Monthly, Yearly">
+      </div>
+    </div>
+
+    <!-- Row 2: Active -->
+    <div class="form-row">
+      <div class="form-group form-group-sm">
+        <label class="form-label">Active</label>
+        <select class="form-control form-select" id="is_active" name="is_active">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Row 3: Description -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Description <span class="required">*</span></label>
+        <textarea class="form-control form-textarea" id="description" name="description" rows="5" required></textarea>
+      </div>
+    </div>
+
+    <!-- Row 4: Features -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Features</label>
+        <textarea class="form-control form-textarea" id="features" name="features" rows="3" placeholder="Enter features separated by commas or new lines"></textarea>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <a href="{% url 'packages:package_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">Save {{ model_name }}</button>
+    </div>
+  </form>
+  
+  <script>
+    document.getElementById('packageForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      // Prepare data for API
+      const data = {
+        name: formData.get('name'),
+        price: parseFloat(formData.get('price')),
+        duration: formData.get('duration') || '',
+        description: formData.get('description'),
+        features: formData.get('features') || '',
+        is_active: formData.get('is_active') === 'true'
+      };
+      
+      try {
+        const response = await fetch('{% url "packages:create_package" %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          // Show success message
+          alert('Package created successfully!');
+          // Redirect to packages list page
+          window.location.href = '{% url "packages:package_list" %}';
+        } else {
+          // Show error message
+          let errorMessage = 'Failed to create package.';
+          if (result.details) {
+            errorMessage += ' Details: ' + JSON.stringify(result.details);
+          } else if (result.error) {
+            errorMessage += ' Error: ' + result.error;
+          }
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while creating the package.');
+      }
+    });
+  </script>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">Add New {{ model_name }}</h2>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+
+  <form id="slotForm" class="blog-form">
+    {% csrf_token %}
+    <!-- Row 1: Date -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date <span class="required">*</span></label>
+        <input type="date" class="form-control" id="date" name="date" required>
+      </div>
+    </div>
+
+    <!-- Row 2: Start Time, End Time -->
+    <div class="form-row form-row-2">
+      <div class="form-group">
+        <label class="form-label">Start Time <span class="required">*</span></label>
+        <input type="time" class="form-control" id="start_time" name="start_time" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">End Time <span class="required">*</span></label>
+        <input type="time" class="form-control" id="end_time" name="end_time" required>
+      </div>
+    </div>
+
+    <!-- Row 3: Slot Name -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Slot Name <span class="required">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="e.g., Morning Session, Evening Slot" required>
+      </div>
+    </div>
+
+    <!-- Row 4: Description -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-control form-textarea" id="description" name="description" rows="3" placeholder="Optional description for this slot..."></textarea>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <a href="{% url 'booking:slot_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-save"></i> Create Slot
+      </button>
+    </div>
+  </form>
+  
+  <script>
+    document.getElementById('slotForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      // Prepare data for API
+      const data = {
+        name: formData.get('name'),
+        date: formData.get('date'),
+        start_time: formData.get('start_time'),
+        end_time: formData.get('end_time'),
+        description: formData.get('description') || ''
+      };
+      
+      try {
+        const response = await fetch('{% url "booking:create_slot_api" %}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          // Show success message
+          alert('Slot created successfully!');
+          // Redirect to slot list page
+          window.location.href = '{% url "booking:slot_list" %}';
+        } else {
+          // Show error message
+          let errorMessage = 'Failed to create slot.';
+          if (result.error) {
+            errorMessage += ' Error: ' + result.error;
+          }
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while creating the slot.');
+      }
+    });
+  </script>
+</div>
+{% endblock %}

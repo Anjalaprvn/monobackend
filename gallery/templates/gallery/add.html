@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Create New {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">Add New {{ model_name }}</h2>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+
+  <!-- 🔴 enctype ADDED -->
+  <form id="galleryForm" class="blog-form" enctype="multipart/form-data" action="{% url 'gallery:create_gallery_item' %}" method="post">
+    {% csrf_token %}
+
+    <!-- Row 1 -->
+    <div class="form-row form-row-3">
+      <div class="form-group">
+        <label class="form-label">Title <span class="required">*</span></label>
+        <input type="text" class="form-control" name="title" id="title" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <input type="text" class="form-control" name="category" id="category">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Active</label>
+        <select class="form-control form-select" name="is_active">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </div>
+
+
+
+    <!-- Images -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Gallery Images <span class="required">*</span></label>
+
+        <div class="media-upload-container">
+          <div class="media-preview-horizontal" id="mediaPreview"></div>
+
+          <div class="upload-controls">
+            <label class="media-upload-box" id="uploadBox" for="images">
+              <div class="upload-icon">
+                <i class="bi bi-cloud-arrow-up"></i>
+              </div>
+              <div class="upload-text">
+                <span class="upload-title">Drop / Click to upload</span>
+                <span class="upload-hint">Screenshots & Images up to 10MB (multiple allowed)</span>
+              </div>
+              <!-- SINGLE INPUT -->
+              <input type="file" id="images" name="images" accept="image/*" multiple hidden>
+            </label>
+
+            <button type="button" class="add-more-btn" id="addMoreBtn"
+              onclick="document.getElementById('images').click()">
+              <i class="bi bi-plus-lg"></i> Add More Images
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <a href="{% url 'gallery:gallery_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">Save {{ model_name }}</button>
+    </div>
+  </form>
+
+  <!-- ================= JS ================= -->
+  <script>
+    const mediaInput = document.getElementById('images');
+    const mediaPreview = document.getElementById('mediaPreview');
+    const uploadBox = document.getElementById('uploadBox');
+    const addMoreBtn = document.getElementById('addMoreBtn');
+
+    let uploadedFiles = [];
+
+    mediaInput.addEventListener('change', function (e) {
+      Array.from(e.target.files).forEach(file => {
+        if (
+          file.type.startsWith('image/') &&
+          !uploadedFiles.some(f => f.name === file.name && f.size === file.size)
+        ) {
+          setPreview(file);
+        }
+      });
+    });
+
+    function setPreview(file) {
+      uploadedFiles.push(file);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const div = document.createElement('div');
+        div.className = 'media-preview-item';
+        div.dataset.filename = file.name;
+
+        div.innerHTML = `
+          <img src="${e.target.result}" alt="${file.name}">
+          <button type="button" class="media-remove-btn" onclick="removeMedia('${file.name}')">&times;</button>
+          <span class="media-filename">${file.name}</span>
+        `;
+        mediaPreview.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+
+      uploadBox.style.display = 'none';
+      addMoreBtn.style.display = 'flex';
+    }
+
+    function removeMedia(filename) {
+      uploadedFiles = uploadedFiles.filter(f => f.name !== filename);
+
+      document.querySelectorAll('.media-preview-item').forEach(item => {
+        if (item.dataset.filename === filename) item.remove();
+      });
+
+      if (uploadedFiles.length === 0) {
+        uploadBox.style.display = 'flex';
+        addMoreBtn.style.display = 'none';
+      }
+    }
+
+    // Drag & Drop
+    ['dragenter','dragover','dragleave','drop'].forEach(ev =>
+      uploadBox.addEventListener(ev, e => {
+        e.preventDefault(); e.stopPropagation();
+      })
+    );
+
+    uploadBox.addEventListener('drop', e => {
+      Array.from(e.dataTransfer.files).forEach(file => {
+        if (
+          file.type.startsWith('image/') &&
+          !uploadedFiles.some(f => f.name === file.name && f.size === file.size)
+        ) {
+          setPreview(file);
+        }
+      });
+    });
+
+    // Submit
+    document.getElementById('galleryForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      // Require at least a title to be entered
+      const title = document.getElementById('title').value.trim();
+      if (!title) {
+        alert('Please enter a title for the gallery item.');
+        return;
+      }
+
+      const fd = new FormData(this);
+      // Only add files that were manually selected and stored in uploadedFiles array
+      // The form already contains the files from the input element, 
+      // but we need to make sure all files are included (those added via drag/drop too)
+      // We need to clear existing files and add all uploadedFiles to avoid duplicates
+      fd.delete('images'); // Remove any existing files
+      uploadedFiles.forEach(file => fd.append('images', file, file.name));
+
+      const res = await fetch('{% url "gallery:create_gallery_item" %}', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: fd
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        window.location.href = '{% url "gallery:gallery_list" %}';
+      } else {
+        alert('Error: ' + JSON.stringify(data));
+      }
+    });
+    
+    // Ensure the close button works
+    document.querySelector('.btn-close').addEventListener('click', function() {
+      window.location.href = '{% url "gallery:gallery_list" %}';
+    });
+  </script>
+
+  <!-- ================= CSS ================= -->
+  <style>
+    .media-preview-horizontal { display:flex; gap:1rem; flex-wrap:wrap; }
+    .media-preview-item { width:150px; height:150px; position:relative; }
+    .media-preview-item img { width:100%; height:100%; object-fit:cover; }
+    .media-remove-btn {
+      position:absolute; top:5px; right:5px;
+      background:#dc3545; color:#fff; border:none; border-radius:50%;
+      width:24px; height:24px; cursor:pointer;
+    }
+    .media-filename {
+      position:absolute; bottom:0; left:0; right:0;
+      background:rgba(0,0,0,.6); color:#fff; font-size:11px; text-align:center;
+    }
+    .add-more-btn { display:none; background:#28a745; color:#fff; border:none; padding:10px; }
+  </style>
+</div>
+{% endblock %}

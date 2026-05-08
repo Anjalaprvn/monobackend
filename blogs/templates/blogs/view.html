@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ blog.title|default:"Blog Post" }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Back Button -->
+<div class="blog-view-nav">
+  <a href="{% url 'blogs:blog_list' %}" class="btn-back">
+    <span>Back</span>
+  </a>
+</div>
+
+<!-- Blog Detail Container -->
+<div class="blog-detail">
+  <!-- Blog Header -->
+  <div class="blog-detail-header">
+    <h2 class="blog-detail-title">{{ blog.title }}</h2>
+    <div class="blog-detail-meta">
+      <span class="status-badge-blog status-{{ blog.status|lower }}">{{ blog.status }}</span>
+      {% if blog.published_at %}
+        <span class="blog-meta-date">
+          <i class="bi bi-calendar3"></i>
+          Published: {{ blog.published_at|date:"F d, Y" }}
+        </span>
+      {% endif %}
+      <span class="blog-meta-date">
+        <i class="bi bi-calendar3"></i>
+        Created: {{ blog.created_at|date:"F d, Y" }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Blog Image -->
+  {% if blog.cover_image %}
+  <div class="blog-detail-image">
+    <img src="{{ blog.cover_image.url }}" alt="{{ blog.title }}" class="small-preview-image">
+  </div>
+  {% endif %}
+
+  <!-- SEO Information -->
+  {% if blog.seo_title or blog.seo_description %}
+  <div class="blog-seo-info">
+    <h3>SEO Information</h3>
+    {% if blog.seo_title %}
+      <p><strong>SEO Title:</strong> {{ blog.seo_title }}</p>
+    {% endif %}
+    {% if blog.seo_description %}
+      <p><strong>SEO Description:</strong> {{ blog.seo_description }}</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Short Description -->
+  <div class="blog-short-description">
+    <h3>Short Description</h3>
+    <p>{{ blog.short_description }}</p>
+  </div>
+
+  <!-- Content -->
+  <div class="blog-content">
+    <h3>Content</h3>
+    <div class="blog-content-text">
+      {{ blog.content|linebreaks }}
+    </div>
+  </div>
+
+  <!-- Blog ID -->
+  <div class="blog-id">
+    <p><strong>Blog ID:</strong> {{ blog.id }}</p>
+  </div>
+
+  <!-- Slug -->
+  <div class="blog-slug">
+    <p><strong>Slug:</strong> {{ blog.slug }}</p>
+  </div>
+</div>
+<style>
+.small-preview-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}

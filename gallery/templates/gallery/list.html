@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ model_name }} List - Vastu Farms{% endblock %}
+
+{% block content %}
+<!-- Filter Bar -->
+<div class="blog-filter-bar">
+  <div class="search-box blog-search">
+    <i class="bi bi-search search-icon"></i>
+    <input type="search" class="search-input" placeholder="Search gallery items...">
+  </div>
+  <div class="blog-filter-actions">
+    <select class="filter-select">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    <a href="{% url 'gallery:gallery_add' %}" class="btn-primary text-decoration-none">
+      <i class="bi bi-plus"></i>
+      <span class="btn-text">Add New</span>
+    </a>
+  </div>
+</div>
+
+<!-- Gallery Table Card -->
+<div class="dashboard-card p-0">
+  <div class="table-responsive">
+    <table class="table table-blog">
+      <thead>
+        <tr>
+          <th class="col-title">Title</th>
+          <th>Images</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Created At</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td class="col-title">
+            <div class="blog-title-cell">
+              <span class="blog-title">{{ item.title }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge bg-primary">{{ item.images.count }} image{{ item.images.count|pluralize }}</span>
+          </td>
+          <td>
+            <span class="category-badge category-{{ item.category|lower|slugify }}">{{ item.category|default:"-" }}</span>
+          </td>
+          <td>
+            <span class="status-badge-blog status-{% if item.is_active %}active{% else %}inactive{% endif %}">{% if item.is_active %}Active{% else %}Inactive{% endif %}</span>
+          </td>
+          <td>
+            <span class="date-cell">
+              <i class="bi bi-calendar3"></i>
+              {{ item.created_at|date:"M d, Y" }}
+            </span>
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="{% url 'gallery:gallery_detail' item.pk %}" class="action-btn-table external">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% url 'gallery:gallery_edit' item.pk %}" class="action-btn-table edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form method="post" action="{% url 'gallery:delete_gallery_item' item.pk %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete gallery item &quot;{{ item.title|escapejs }}&quot;?');">
+                {% csrf_token %}
+                <button type="submit" class="action-btn-table delete" style="background: none; border: none; padding: 0;">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4 text-muted">No {{ model_name }} found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

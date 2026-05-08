@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ model_name }} - Vastu Farms{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-card-header">
+    <h2 class="form-card-title">Edit {{ model_name }}</h2>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+
+  <form id="clientForm" class="blog-form">
+    {% csrf_token %}
+    <!-- Row 1: Name (required) -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Name <span class="required">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ client.name }}" required>
+      </div>
+    </div>
+
+    <!-- Row 2: Website (optional) -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Website</label>
+        <input type="url" class="form-control" id="website" name="website" value="{{ client.website|default:'' }}">
+        <div class="form-text">Optional website URL for the client</div>
+      </div>
+    </div>
+
+    <!-- Row 3: Active Status (optional) -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Active</label>
+        <select class="form-control form-select" id="is_active" name="is_active">
+          <option value="true" {% if client.is_active %}selected{% endif %}>Yes</option>
+          <option value="false" {% if not client.is_active %}selected{% endif %}>No</option>
+        </select>
+        <div class="form-text">Whether this client is active or not</div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <a href="{% url 'clients:client_list' %}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn-primary">Update {{ model_name }}</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Handle form submission
+  document.getElementById('clientForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    // Prepare data for API
+    const data = {
+      name: formData.get('name'),
+      website: formData.get('website') || '',
+      is_active: formData.get('is_active') === 'true'
+    };
+    
+    try {
+      const response = await fetch('{% url "clients:update_client" %}?id=' + encodeURIComponent(client.id), { // Use query parameter instead of path parameter
+        method: 'PUT',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        // Show success message
+        alert('Client updated successfully!');
+        // Redirect to clients list page
+        window.location.href = '{% url "clients:client_list" %}';
+      } else {
+        // Show error message
+        let errorMessage = 'Failed to update client.';
+        if (result.details) {
+          errorMessage += ' Details: ' + JSON.stringify(result.details);
+        } else if (result.error) {
+          errorMessage += ' Error: ' + result.error;
+        }
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while updating the client.');
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Home - Website Builder</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #81a89b 0%, #373a38 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 2.5rem;
+        }
+
+        .logo {
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #ffffff;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #eafaf1;
+            opacity: 0.9;
+        }
+
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-message h2 {
+            color: #ffffff;
+            margin-bottom: 0.6rem;
+        }
+
+        .welcome-message p {
+            color: #e8f6f3;
+            font-size: 0.95rem;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(191, 173, 173, 0.637)
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1.6rem;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .feature-icon {
+            font-size: 2.4rem;
+            margin-bottom: 0.9rem;
+            color: #c8f3da;
+        }
+
+        .feature-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+        }
+
+        .feature-desc {
+            font-size: 0.88rem;
+            color: #eafaf1;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 2.5rem;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #ffffff;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #84a08f;
+        }
+
+        .btn-primary:hover {
+            background: #e9f7ef;
+            transform: scale(1.06);
+        }
+
+        .user-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #eafaf1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">🏠 Dashboard</div>
+        <div class="subtitle">Website Builder Administration Panel</div>
+
+        <div class="welcome-message">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Manage your website content, users, and settings from this centralized control panel.</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Analytics</div>
+                <div class="feature-desc">Track visitor statistics and engagement metrics</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <div class="feature-title">User Management</div>
+                <div class="feature-desc">Manage administrators and user accounts</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <div class="feature-title">Content Editor</div>
+                <div class="feature-desc">Create and edit blog posts, pages, and media</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <div class="feature-title">Settings</div>
+                <div class="feature-desc">Configure site preferences and integrations</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'dashboard:login' %}" class="btn btn-primary">
+                Login to Admin
+            </a>
+        </div>
+
+        <div class="user-info">
+            <p>Ready to get started? Sign in to access your dashboard controls.</p>
+        </div>
+    </div>
+</body>
+</html>
